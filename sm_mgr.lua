@@ -411,6 +411,26 @@ function sm_mgr:AddCondition( condition )
 	end
 end
 
+-- allows for forcefully seta profile without checking the class; used for PvE Skill profiles only
+function sm_mgr.Force_Profile(name)
+	if sm_mgr.profile.temp.filename ~= name then
+		local profile = FileLoad(sm_mgr.luamodspath .. [[\GW2Minion\SkillManagerProfiles\]] .. name)
+		if table.valid(profile) then
+			local found = false
+			for _, v in pairs(sm_mgr.profiles) do
+				if v.temp.filename == name then
+					found = true
+				end
+			end
+
+			profile.temp = { filename = name, folderpath = sm_mgr.luamodspath .. [[\GW2Minion\SkillManagerProfiles\]] }
+			if not found then
+				table.insert(sm_mgr.profiles, profile)
+			end
+			sm_mgr.profile = sm_profile:new(profile)
+		end
+	end
+end
 
 -- Exposed API
 _G["SkillManager"] = {}
